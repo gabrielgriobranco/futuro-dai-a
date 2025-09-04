@@ -4,32 +4,125 @@
     <meta charset="UTF-8">
     <meta name="QuizzIA" content="width=device-width, initial-scale=1.0">
     <title>QuizzIA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+        .caixa-principal, .caixa-resultado {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .caixa-alternativas button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .caixa-resultado {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-   
-    
+    <div class="caixa-principal">
+        <div class="caixa-perguntas"></div>
+        <div class="caixa-alternativas"></div>
+    </div>
+    <div class="caixa-resultado">
+        <h2>Resultado</h2>
+        <p class="texto-resultado"></p>
+    </div>
 
+    <script>
+        const caixaPrincipal = document.querySelector(".caixa-principal");
+        const caixaPerguntas = document.querySelector(".caixa-perguntas");
+        const caixaAlternativas = document.querySelector(".caixa-alternativas");
+        const caixaResultado = document.querySelector(".caixa-resultado");
+        const textoResultado = document.querySelector(".texto-resultado");
 
+        const perguntas = [
+            {
+                enunciado: "1. Qual dos impactos a IA vai causar no mercado futuro?",
+                alternativas: [
+                    "Substituir totalmente empregos humanos.",
+                    "Criar novos tipos de empregos."
+                ],
+            },
+            {
+                enunciado: "2. Qual dessas áreas é considerada uma das maiores tendências futuras da IA nos próximos anos?",
+                alternativas: [
+                    "Realidade aumentada aplicada apenas a jogos",
+                    "Modelos multimodais que combinam texto, imagem, som e vídeo"
+                ],
+            },
+            {
+                enunciado: "3. O que se espera que aumente com o avanço da IA generativa nos próximos anos?",
+                alternativas: [
+                    "A criação automática de conteúdo em diversas mídias (texto, imagem, vídeo, áudio)",
+                    "A diminuição do uso de redes neurais profundas"
+                ],
+            },
+            {
+                enunciado: "4. Em relação à ética na IA, qual tendência está ganhando mais atenção globalmente?",
+                alternativas: [
+                    "Tornar todos os modelos de IA de código fechado obrigatoriamente",
+                    "Desenvolvimento de regulamentações e IA responsável"
+                ],
+            },
+            {
+                enunciado: "5. Qual é uma tendência no uso de IA em ambientes corporativos?",
+                alternativas: [
+                    "Automação inteligente de processos (como RH, jurídico, finanças)",
+                    "Exclusivamente uso da IA em marketing e vendas"
+                ],
+            },
+            {
+                enunciado: "6. O que se espera sobre os modelos de linguagem no futuro próximo?",
+                alternativas: [
+                    "Serão mais eficientes, personalizados e com menor consumo de energia",
+                    "Serão sempre maiores, mais lentos e inacessíveis ao público geral"
+                ],
+            },
+        ];
 
+        let indiceAtual = 0;
+        let respostas = [];
 
+        function mostraPergunta() {
+            if (indiceAtual >= perguntas.length) {
+                mostraResultado();
+                return;
+            }
+            const perguntaAtual = perguntas[indiceAtual];
+            caixaPerguntas.textContent = perguntaAtual.enunciado;
+            caixaAlternativas.innerHTML = "";
 
+            perguntaAtual.alternativas.forEach(alternativa => {
+                const botao = document.createElement("button");
+                botao.textContent = alternativa;
+                botao.addEventListener("click", () => {
+                    respostas.push(alternativa);
+                    indiceAtual++;
+                    mostraPergunta();
+                });
+                caixaAlternativas.appendChild(botao);
+            });
+        }
 
+        function mostraResultado() {
+            caixaPrincipal.style.display = "none";
+            caixaResultado.style.display = "block";
+            textoResultado.textContent = "Você respondeu " + respostas.length + " perguntas!";
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        mostraPergunta();
+    </script>
 </body>
 </html>
