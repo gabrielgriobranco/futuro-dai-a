@@ -24,6 +24,19 @@
             padding: 10px;
             width: 100%;
             cursor: pointer;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            transition: 0.3s;
+        }
+        .caixa-alternativas button:hover {
+            background: #e0e0e0;
+        }
+        .correto {
+            background: #a5d6a7 !important;
+        }
+        .errado {
+            background: #ef9a9a !important;
         }
         .caixa-resultado {
             display: none;
@@ -51,67 +64,81 @@
             {
                 enunciado: "1. O que é Inteligência Artificial (IA)?",
                 alternativas: [
-                    "A) Um sistema que simula a inteligência humana em máquinas.",
-                    " B) Um tipo de vírus que afeta apenas robôs."
-                ],
+                    { texto: "A) Um sistema que simula a inteligência humana em máquinas.", correta: true },
+                    { texto: "B) Um tipo de vírus que afeta apenas robôs.", correta: false }
+                ]
             },
             {
                 enunciado: "2. Qual dessas tarefas pode ser feita por uma IA?",
                 alternativas: [
-                    "A) Pintar um quadro com sentimentos humanos.",
-                    " B) Reconhecer rostos em imagens automaticamente"
-                ],
+                    { texto: "A) Pintar um quadro com sentimentos humanos.", correta: false },
+                    { texto: "B) Reconhecer rostos em imagens automaticamente.", correta: true }
+                ]
             },
             {
                 enunciado: "3. O ChatGPT é um exemplo de quê?",
                 alternativas: [
-                    "A) Uma IA especializada em linguagem natural.",
-                    "B) Um programa para criar vídeos 3D."
-                ],
+                    { texto: "A) Uma IA especializada em linguagem natural.", correta: true },
+                    { texto: "B) Um programa para criar vídeos 3D.", correta: false }
+                ]
             },
             {
                 enunciado: "4. IA pode aprender com dados. Isso significa que ela:",
                 alternativas: [
-                    "A) Fica mais inteligente toda vez que é reiniciada.",
-                    "B) Melhora seu desempenho analisando padrões nos dados"
-                ],
+                    { texto: "A) Fica mais inteligente toda vez que é reiniciada.", correta: false },
+                    { texto: "B) Melhora seu desempenho com exemplos e informações.", correta: true }
+                ]
             },
             {
                 enunciado: "5. Qual das opções é um risco possível do uso irresponsável da IA?",
                 alternativas: [
-                    "A) Tornar as pessoas mais felizes automaticamente.",
-                    "B) Tomar decisões injustas ou enviesadas."
-                ],
+                    { texto: "A) Tornar as pessoas mais felizes automaticamente.", correta: false },
+                    { texto: "B) Tomar decisões injustas ou enviesadas.", correta: true }
+                ]
             },
             {
                 enunciado: "6. IA precisa ser treinada. Isso quer dizer que:",
                 alternativas: [
-                    "A) Ela aprende sozinha sem qualquer informação anterior.",
-                    " B) Ela precisa de dados e exemplos para aprender."
-                ],
-            },
+                    { texto: "A) Ela aprende sozinha sem qualquer informação anterior.", correta: false },
+                    { texto: "B) Ela precisa de dados e exemplos para aprender.", correta: true }
+                ]
+            }
         ];
 
         let indiceAtual = 0;
-        let respostas = [];
+        let pontuacao = 0;
 
         function mostraPergunta() {
             if (indiceAtual >= perguntas.length) {
                 mostraResultado();
                 return;
             }
+
             const perguntaAtual = perguntas[indiceAtual];
             caixaPerguntas.textContent = perguntaAtual.enunciado;
             caixaAlternativas.innerHTML = "";
 
             perguntaAtual.alternativas.forEach(alternativa => {
                 const botao = document.createElement("button");
-                botao.textContent = alternativa;
+                botao.textContent = alternativa.texto;
+
                 botao.addEventListener("click", () => {
-                    respostas.push(alternativa);
-                    indiceAtual++;
-                    mostraPergunta();
+                    if (alternativa.correta) {
+                        botao.classList.add("correto");
+                        pontuacao++;
+                    } else {
+                        botao.classList.add("errado");
+                    }
+
+                    // Desabilitar os botões após resposta
+                    Array.from(caixaAlternativas.children).forEach(btn => btn.disabled = true);
+
+                    setTimeout(() => {
+                        indiceAtual++;
+                        mostraPergunta();
+                    }, 1000);
                 });
+
                 caixaAlternativas.appendChild(botao);
             });
         }
@@ -119,7 +146,7 @@
         function mostraResultado() {
             caixaPrincipal.style.display = "none";
             caixaResultado.style.display = "block";
-            textoResultado.textContent = "Você respondeu " + respostas.length + " perguntas!";
+            textoResultado.textContent = `Você acertou ${pontuacao} de ${perguntas.length} perguntas!`;
         }
 
         mostraPergunta();
